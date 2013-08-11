@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<modification>
+        <id>Replace TAX </id>
+        <version>1.0</version>
+        <vqmver>2.X</vqmver>
+        <author>fourthzone.si</author>
+        <file name="system/library/tax.php">
+                <operation info="subtract tax from price">
+                        <search position="replace"><![CDATA[
+                        return $value + $amount;
+                        ]]></search>
+                        <add><![CDATA[
+                        return $value - $amount;
+                        ]]></add>
+                </operation>
+        </file>		
+	<file name="catalog/controller/product/product.php">
+                <operation info="replace tax lines - price">
+                        <search position="replace"><![CDATA[
+                        $this->data['price'] = $this->currency->format($this->tax->calculate($product_info['price'], $product_info['tax_class_id'], $this->config->get('config_tax')));
+                        ]]></search>
+                        <add><![CDATA[
+                        $this->data['price'] = $this->currency->format($product_info['price']);
+                        ]]></add>
+                </operation>
+		<operation info="replace tax lines #2 - tax">
+                        <search position="replace"><![CDATA[
+			$this->data['tax'] = $this->currency->format((float)$product_info['special'] ? $product_info['special'] : $product_info['price']);
+                        ]]></search>
+                        <add><![CDATA[
+                        $this->data['tax'] = $this->currency->format((float)$product_info['special'] ? $this->tax->calculate($product_info['special'], $product_info['tax_class_id'], $this->config->get('config_tax')) : $this->tax->calculate($product_info['price'], $product_info['tax_class_id'], $this->config->get('config_tax')));
+                        ]]></add>
+                </operation>
+		<operation info="replace tax lines #2 - special">
+                        <search position="replace"><![CDATA[
+			$this->data['special'] = $this->currency->format($this->tax->calculate($product_info['special'], $product_info['tax_class_id'], $this->config->get('config_tax')));
+                        ]]></search>
+                        <add><![CDATA[
+                        $this->data['special'] = $this->currency->format($product_info['special']);
+                        ]]></add>
+                </operation>
+        </file>
+	<file name="catalog/controller/module/featured.php">
+                <operation info="replace tax lines #4">
+                        <search position="replace"><![CDATA[
+			$price = $this->currency->format($this->tax->calculate($product_info['price'], $product_info['tax_class_id'], $this->config->get('config_tax')));
+                        ]]></search>
+                        <add><![CDATA[
+                        $price = $this->currency->format($product_info['price']);
+                        ]]></add>
+                </operation>
+		<operation info="replace tax lines #5">
+			<search position="replace"><![CDATA[
+			$special = $this->currency->format($this->tax->calculate($product_info['special'], $product_info['tax_class_id'], $this->config->get('config_tax')));
+                        ]]></search>
+                        <add><![CDATA[
+                        $special = $this->currency->format($product_info['special']);
+                        ]]></add>
+                </operation>
+        </file>
+	<file name="catalog/controller/checkout/cart.php">
+                <operation info="replace tax lines #6">
+                        <search position="replace"><![CDATA[
+			$price = $this->currency->format($this->tax->calculate($product['price'], $product['tax_class_id'], $this->config->get('config_tax')));
+                        ]]></search>
+                        <add><![CDATA[
+                        $price = $this->currency->format($product['price']);
+                        ]]></add>
+                </operation>
+		<operation info="replace tax lines #7">
+                        <search position="replace"><![CDATA[
+			$total = $this->currency->format($this->tax->calculate($product['price'], $product['tax_class_id'], $this->config->get('config_tax')) * $product['quantity']);
+                        ]]></search>
+                        <add><![CDATA[
+                        $total = $this->currency->format($product['price']* $product['quantity']);
+                        ]]></add>
+                </operation>
+        </file>
+	<file name="catalog/controller/module/cart.php">
+                <operation info="replace tax lines #8">
+                        <search position="replace"><![CDATA[
+			$price = $this->currency->format($this->tax->calculate($product['price'], $product['tax_class_id'], $this->config->get('config_tax')));
+                        ]]></search>
+                        <add><![CDATA[
+                        $price = $this->currency->format($product['price']);
+                        ]]></add>
+                </operation>
+		<operation info="replace tax lines #9">
+                        <search position="replace"><![CDATA[
+			$total = $this->currency->format($this->tax->calculate($product['price'], $product['tax_class_id'], $this->config->get('config_tax')) * $product['quantity']);
+                        ]]></search>
+                        <add><![CDATA[
+                        $total = $this->currency->format($product['price']* $product['quantity']);
+                        ]]></add>
+                </operation>
+        </file>
+	<file name="system/library/cart.php">
+                <operation info="replace tax lines #10 - function getSubTotal">
+                        <search position="replace" offset="8"><![CDATA[
+			public function getSubTotal() {
+                        ]]></search>
+                        <add><![CDATA[
+                        public function getSubTotal() {
+			$total = 0;
+			
+				foreach ($this->getProducts() as $product) {
+					$total += $this->tax->calculate($product['price'], $product['tax_class_id'], $this->config->get('config_tax')) * $product['quantity'];
+				}
+
+				return $total;
+			}
+                        ]]></add>
+                </operation>
+
+        </file>
+	<file name="catalog/controller/product/category.php">
+                <operation info="replace tax lines - price">
+                        <search position="replace"><![CDATA[
+						$price = $this->currency->format($this->tax->calculate($result['price'], $result['tax_class_id'], $this->config->get('config_tax')));
+                        ]]></search>
+                        <add><![CDATA[
+						$price = $this->currency->format($result['price']);
+                        ]]></add>
+                </operation>
+        </file>
+</modification>
